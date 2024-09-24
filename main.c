@@ -29,11 +29,11 @@ int main() {
 
   // Establecer el modo de visualización
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-  glutInitWindowSize(image->width, image->height);
+  glutInitWindowSize(image->infoHeader.width, image->infoHeader.height);
   glutCreateWindow("Visualizador de BMP");
 
   glLoadIdentity();
-  glOrtho(0, image->width, image->height, 0, -1, 1);
+  glOrtho(0, image->infoHeader.width, image->infoHeader.height, 0, -1, 1);
 
   glutDisplayFunc(display);
   glutMainLoop();

@@ -11,12 +11,19 @@ BMPImage* readBMP(const char *filename) {
     return NULL;
   }
 
-  fread(image->header, sizeof(unsigned char), 54, file);
-  image->width = *(int*)&image->header[18];
-  image->height = *(int*)&image->header[22];
+  fread(&image->fileHeader, sizeof(struct BMPFileHeader), 1, file);
+  if (image->fileHeader.fileType != 0x4D42) {
+    printf("El archivo no es un BMP válido.\n");
+    fclose(file);
+    free(image);
+    return NULL;
+  }
 
-  image->data = malloc(image->width * image->height * 3); // 3 bytes por píxel
-  fread(image->data, sizeof(unsigned char), image->width * image->height * 3, file);
+  fread(&image->infoHeader, sizeof(struct BMPInfoHeader), 1, file);
+  image->data = (unsigned char *)malloc(image->infoHeader.imageSize);
+
+  fseek(file, image->fileHeader.dataOffset, SEEK_SET);
+  fread(image->data, 1, image->infoHeader.imageSize, file);
   fclose(file);
 
   return image;
@@ -28,5 +35,5 @@ void freeBMP(BMPImage *image) {
 }
 
 void drawBMP(BMPImage *image) {
-  glDrawPixels(image->width, image->height, GL_BGR, GL_UNSIGNED_BYTE, image->data);
+  glDrawPixels(image->infoHeader.width, image->infoHeader.height, GL_BGR, GL_UNSIGNED_BYTE, image->data);
 }

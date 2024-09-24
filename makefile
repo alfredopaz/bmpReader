@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -g -lm
-LDFLAGS = -lGL -lGLU -lglut
+CFLAGS = -Wall -g -lm -fpack-struct=1
+LDFLAGS = -lGL -lGLU -lglut 
 
 all: bmpReader
 
